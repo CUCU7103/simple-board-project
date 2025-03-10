@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name = "LOG_PATTERN">
+            %d [%t] %-5level %logger{36}.%M - %msg%n
+        </Property>
+    </Properties>
+    <Appenders>
+        <!-- 콘솔 출력 -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- 파일 출력 (RollingFileAppender) -->
+        <RollingFile name="FileAppender"
+                     fileName="c:\simple-project-log/logs/app.log"
+                     filePattern="c:\simple-project-log/logs/app-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout>
+                <pattern>${LOG_PATTERN}</pattern>
+            </PatternLayout>
+            <Policies>
+                <!-- 7일마다 로그 롤링 -->
+                <TimeBasedTriggeringPolicy interval="7" modulate="true"/>
+                <!-- 로그 파일 크기 10MB 초과 시 롤링 -->
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- Root Logger -->
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
+        </Root>
+
+        <!-- 특정 패키지 로그 레벨 조정 예시 -->
+        <Logger name="com.board.simpleboardproject" level="debug" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
+        </Logger>
+        <!-- hibernate 로깅 설정 -->
+        <Logger name="org.hibernate" level="info" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
+        </Logger>
+
+        <!-- hibernate가 실행하는 로그 관련 설정 -->
+        <Logger name="org.hibernate.SQL" level="debug" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Logger>
+
+</Loggers>
+</Configuration>
