@@ -1,6 +1,7 @@
 package com.board.simpleboardproject.board.application;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,10 @@ import com.board.simpleboardproject.board.domain.Board;
 import com.board.simpleboardproject.board.dto.create.BoardCreateRequestDto;
 import com.board.simpleboardproject.board.dto.create.BoardCreateResponseDto;
 import com.board.simpleboardproject.board.dto.search.BoardAllSearchResponse;
+import com.board.simpleboardproject.board.dto.search.BoardSearchByIdResponse;
 import com.board.simpleboardproject.board.mapper.BoardMapper;
+import com.board.simpleboardproject.global.error.ErrorCode;
+import com.board.simpleboardproject.global.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,5 +35,16 @@ public class BoardService {
 	public List<BoardAllSearchResponse> searchBoard() {
 		List<Board> board = boardRepository.findAllByOrderByCreatedAtDesc();
 		return boardMapper.toAllSearchResponseDto(board);
+	}
+
+	@Transactional(readOnly = true)
+	public BoardSearchByIdResponse getBoardById(Long boardId) {
+
+		Optional<Board> board = boardRepository.findById(boardId);
+		if (board.isEmpty()) {
+			throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
+		}
+		return boardMapper.toSearchByIdResponseDto(board.get());
+
 	}
 }

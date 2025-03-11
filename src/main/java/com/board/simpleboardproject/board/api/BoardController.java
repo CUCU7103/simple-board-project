@@ -5,15 +5,18 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.board.simpleboardproject.board.application.BoardService;
 import com.board.simpleboardproject.board.dto.create.BoardCreateRequestDto;
 import com.board.simpleboardproject.board.dto.create.BoardCreateResponseDto;
 import com.board.simpleboardproject.board.dto.search.BoardAllSearchResponse;
+import com.board.simpleboardproject.board.dto.search.BoardSearchByIdResponse;
 import com.board.simpleboardproject.global.message.Message;
 
 import jakarta.validation.Valid;
@@ -40,6 +43,11 @@ public class BoardController {
 		return ResponseEntity.status(HttpStatus.OK).body(new Message("200","게시글 조회에 성공하였습니다",result));
 	}
 
+	@GetMapping("/{boardId}")
+	public ResponseEntity<Message> getBoardById(@PathVariable Long boardId) {
+		BoardSearchByIdResponse result = boardService.getBoardById(boardId);
+		return ResponseEntity.status(HttpStatus.OK).body(new Message("200","게시글 조회에 성공하였습니다",result));
+	}
 
 
 }

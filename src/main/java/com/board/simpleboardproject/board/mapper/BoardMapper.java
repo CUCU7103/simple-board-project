@@ -9,6 +9,7 @@ import com.board.simpleboardproject.board.domain.Board;
 import com.board.simpleboardproject.board.dto.create.BoardCreateRequestDto;
 import com.board.simpleboardproject.board.dto.create.BoardCreateResponseDto;
 import com.board.simpleboardproject.board.dto.search.BoardAllSearchResponse;
+import com.board.simpleboardproject.board.dto.search.BoardSearchByIdResponse;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BoardMapper {
@@ -18,4 +19,6 @@ public interface BoardMapper {
 	BoardCreateResponseDto toCreateResponseDto(Board entity);
 
 	List<BoardAllSearchResponse> toAllSearchResponseDto(List<Board> entity);
+
+	BoardSearchByIdResponse toSearchByIdResponseDto(Board entity);
 }
