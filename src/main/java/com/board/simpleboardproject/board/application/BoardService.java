@@ -12,6 +12,8 @@ import com.board.simpleboardproject.board.dto.create.BoardCreateRequestDto;
 import com.board.simpleboardproject.board.dto.create.BoardCreateResponseDto;
 import com.board.simpleboardproject.board.dto.search.BoardAllSearchResponse;
 import com.board.simpleboardproject.board.dto.search.BoardSearchByIdResponse;
+import com.board.simpleboardproject.board.dto.update.BoardUpdateRequestDto;
+import com.board.simpleboardproject.board.dto.update.BoardUpdateResponseDto;
 import com.board.simpleboardproject.board.mapper.BoardMapper;
 import com.board.simpleboardproject.global.error.ErrorCode;
 import com.board.simpleboardproject.global.exception.CustomException;
@@ -46,5 +48,15 @@ public class BoardService {
 		}
 		return boardMapper.toSearchByIdResponseDto(board.get());
 
+	}
+
+	@Transactional
+	public BoardUpdateResponseDto updateBoard(Long boardId, BoardUpdateRequestDto dto) {
+		Optional<Board> board = boardRepository.findByBoardIdAndBoardPassword(boardId,dto.boardPassword());
+		if (board.isEmpty()) {
+			throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
+		}
+		Board updatedBoard = boardMapper.toEntity(dto);
+		return boardMapper.toUpdateResponseDto(boardRepository.save(updatedBoard));
 	}
 }
