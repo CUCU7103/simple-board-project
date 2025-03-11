@@ -20,9 +20,7 @@ public class BoardService {
 
 	@Transactional
 	public BoardCreateResponseDto createBoard(BoardCreateRequestDto dto) {
-
 		Board board = boardRepository.save(boardMapper.toEntity(dto));
-
 		return boardMapper.toDto(board);
 	}
 }
