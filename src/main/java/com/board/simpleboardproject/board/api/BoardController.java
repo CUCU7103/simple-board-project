@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,6 +59,12 @@ public class BoardController {
 	public ResponseEntity<Message> updateBoard(@PathVariable Long boardId, @Valid @RequestBody BoardUpdateRequestDto dto) {
 		BoardUpdateResponseDto result = boardService.updateBoard(boardId,dto);
 		return ResponseEntity.status(HttpStatus.OK).body(new Message("200","게시글 수정에 성공하였습니다",result));
+	}
+
+	@DeleteMapping("/{boardId}")
+	public ResponseEntity<Message> deleteBoard(@PathVariable Long boardId, @RequestHeader String boardPassword) {
+		boardService.deleteBoard(boardId,boardPassword);
+		return ResponseEntity.status(HttpStatus.OK).body(new Message("200","게시글 삭제에 성공하였습니다"));
 	}
 
 

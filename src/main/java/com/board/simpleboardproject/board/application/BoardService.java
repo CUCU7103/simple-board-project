@@ -17,6 +17,7 @@ import com.board.simpleboardproject.board.dto.update.BoardUpdateResponseDto;
 import com.board.simpleboardproject.board.mapper.BoardMapper;
 import com.board.simpleboardproject.global.error.ErrorCode;
 import com.board.simpleboardproject.global.exception.CustomException;
+import com.board.simpleboardproject.global.model.YnCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,5 +59,18 @@ public class BoardService {
 		}
 		Board updatedBoard = boardMapper.toEntity(dto);
 		return boardMapper.toUpdateResponseDto(boardRepository.save(updatedBoard));
+	}
+
+	@Transactional
+	public void deleteBoard(Long boardId, String boardPassword) {
+		Optional<Board> board = boardRepository.findByBoardIdAndBoardPassword(boardId,boardPassword);
+		if (board.isEmpty()) {
+			throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
+		}
+		Board deletedBoard = board.get()
+			.toBuilder()
+			.deletedYn(YnCode.Y)
+			.build();
+		boardRepository.save(deletedBoard);
 	}
 }

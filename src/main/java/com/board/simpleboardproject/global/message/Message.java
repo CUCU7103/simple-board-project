@@ -16,4 +16,10 @@ public class Message {
 		this.message = message;
 		this.data = data;
 	}
+
+	@Builder
+	public Message(String statusCode, String message) {
+		this.statusCode = statusCode;
+		this.message = message;
+	}
 }

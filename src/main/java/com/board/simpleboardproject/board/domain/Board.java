@@ -67,7 +67,7 @@ public class Board {
 	@Enumerated(EnumType.STRING)
 	private YnCode deletedYn;
 
-	@Builder
+	@Builder(toBuilder = true)
 	public Board(Long boardId,String boardPassword, String username, String title,
 		String post, String createdBy, String modifiedBy, YnCode deletedYn) {
 		this.boardId = boardId;
