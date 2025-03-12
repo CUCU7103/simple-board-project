@@ -2,9 +2,7 @@ package com.board.simpleboardproject.global.error;
 
 import org.springframework.http.HttpStatus;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 public enum ErrorCode {
