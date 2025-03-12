@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 public class Message {
 
-	private String statusCode;
-	private String message;
+	private final String statusCode;
+	private final String message;
 	private Object data;
 
 	@Builder
