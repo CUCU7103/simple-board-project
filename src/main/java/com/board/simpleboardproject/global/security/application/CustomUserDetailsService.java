@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.board.simpleboardproject.user.dao.UserRepository;
+import com.board.simpleboardproject.domain.user.dao.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
