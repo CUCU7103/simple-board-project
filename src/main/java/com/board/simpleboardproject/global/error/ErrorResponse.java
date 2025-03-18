@@ -18,16 +18,6 @@ public class ErrorResponse {
 	private final String message;
 	private final String codeName;
 
-
-	// ErrorCode를 받는 정적 팩토리 메소드로 변경
-	public static ErrorResponse of(ErrorCode error) {
-		return ErrorResponse.builder()
-			.status(error.getStatus())
-			.message(error.getMessage())
-			.codeName(error.name())
-			.build();
-	}
-
 	public static ResponseEntity<ErrorResponse> errorResponse(CustomException e) {
 		return ResponseEntity
 			.status(e.getErrorCode().getStatus())
