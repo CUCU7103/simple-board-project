@@ -10,7 +10,6 @@ public class UserInfo {
 
 	public static String username(){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		log.info(authentication.getName());
 		return authentication.getName();
 	}
 
