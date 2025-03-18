@@ -20,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,6 +38,9 @@ public class Comment {
 
 	@Column(name = "post")
 	private String post;
+
+	@Column(name = "username")
+	private String username;
 
 	@Column(name = "created_at", updatable = false)
 	@CreatedDate
@@ -58,5 +62,14 @@ public class Comment {
 	@Enumerated(EnumType.STRING)
 	private YnCode deletedYn;
 
-
+	@Builder(toBuilder = true)
+	public Comment(Long commentId, String post, String username,
+		String createdBy, String modifiedBy, YnCode deletedYn) {
+		this.commentId = commentId;
+		this.post = post;
+		this.username = username;
+		this.createdBy = (createdBy == null) ? username : createdBy;
+		this.modifiedBy = modifiedBy;
+		this.deletedYn = (deletedYn == null) ? YnCode.N : deletedYn;
+	}
 }
