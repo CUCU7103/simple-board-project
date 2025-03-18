@@ -6,6 +6,8 @@ import org.mapstruct.ReportingPolicy;
 import com.board.simpleboardproject.domain.comment.domain.Comment;
 import com.board.simpleboardproject.domain.comment.dto.create.CommentCreateRequestDto;
 import com.board.simpleboardproject.domain.comment.dto.create.CommentCreateResponseDto;
+import com.board.simpleboardproject.domain.comment.dto.update.CommentUpdateRequestDto;
+import com.board.simpleboardproject.domain.comment.dto.update.CommentUpdateResponseDto;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CommentMapper {
@@ -15,4 +17,6 @@ public interface CommentMapper {
 	Comment toCommentCreateResponseDto(CommentCreateRequestDto dto);
 
 	CommentCreateResponseDto toCommentCreateResponseDto(Comment comment);
+
+	CommentUpdateResponseDto toCommentUpdateResponseDto(Comment comment);
 }

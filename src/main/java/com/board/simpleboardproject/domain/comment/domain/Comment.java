@@ -23,12 +23,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name="comment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EntityListeners(AuditingEntityListener.class)
+@ToString
 public class Comment {
 
 	@Id
@@ -62,14 +64,24 @@ public class Comment {
 	@Enumerated(EnumType.STRING)
 	private YnCode deletedYn;
 
+	@Column(name ="board_id")
+	private Long boardId;
+
 	@Builder(toBuilder = true)
 	public Comment(Long commentId, String post, String username,
-		String createdBy, String modifiedBy, YnCode deletedYn) {
+		String createdBy, String modifiedBy, YnCode deletedYn, Long boardId) {
 		this.commentId = commentId;
 		this.post = post;
 		this.username = username;
 		this.createdBy = (createdBy == null) ? username : createdBy;
 		this.modifiedBy = modifiedBy;
 		this.deletedYn = (deletedYn == null) ? YnCode.N : deletedYn;
+		this.boardId = boardId;
+	}
+
+	public void updateComment(String post, String modifiedBy) {
+		this.post = post;
+		this.modifiedBy = modifiedBy;
+	}
 	}
 }
