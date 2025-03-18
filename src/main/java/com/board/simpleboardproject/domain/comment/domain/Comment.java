@@ -83,5 +83,9 @@ public class Comment {
 		this.post = post;
 		this.modifiedBy = modifiedBy;
 	}
+
+	public void deleteComment(YnCode deletedYn) {
+		this.deletedYn = deletedYn;
 	}
+
 }

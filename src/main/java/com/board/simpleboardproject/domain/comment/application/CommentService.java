@@ -55,4 +55,12 @@ public class CommentService {
 		Comment result = commentRepository.save(comment);
 		return commentMapper.toCommentUpdateResponseDto(result);
 	}
+
+	@Transactional
+	public void deleteComment(long commentId) {
+		Comment comment = commentRepository.findByCommentIdAndDeletedYn(commentId,YnCode.N)
+			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+		comment.deleteComment(YnCode.Y);
+		commentRepository.save(comment);
+	}
 }
