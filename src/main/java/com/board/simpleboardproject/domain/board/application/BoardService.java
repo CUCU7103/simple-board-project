@@ -47,7 +47,7 @@ public class BoardService {
 
 	@Transactional(readOnly = true)
 	public BoardSearchByIdResponse getBoardById(Long boardId) {
-		Board board = boardRepository.findByBoardId(boardId)
+		Board board = boardRepository.findByBoardIdAndDeletedYn(boardId,YnCode.N)
 			.orElseThrow(()-> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 		return boardMapper.toSearchByIdResponseDto(board);
 
@@ -55,24 +55,39 @@ public class BoardService {
 
 	@Transactional
 	public BoardUpdateResponseDto updateBoard(Long boardId, BoardUpdateRequestDto dto) {
-		Optional<Board> board = boardRepository.findByBoardIdAndBoardPassword(boardId,dto.boardPassword());
-		if (board.isEmpty()) {
-			throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
-		}
-		Board updatedBoard = boardMapper.toEntity(dto);
-		return boardMapper.toUpdateResponseDto(boardRepository.save(updatedBoard));
+		Board existingBoard = isAdmin()
+			? findBoardByIdForAdmin(boardId)
+			: findBoardWithValidation(boardId,dto.boardPassword());
+		existingBoard.updateBoard(dto);
+		return boardMapper.toUpdateResponseDto(existingBoard);
 	}
 
 	@Transactional
 	public void deleteBoard(Long boardId, String boardPassword) {
-		Optional<Board> board = boardRepository.findByBoardIdAndBoardPassword(boardId,boardPassword);
-		if (board.isEmpty()) {
-			throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
-		}
-		Board deletedBoard = board.get()
-			.toBuilder()
-			.deletedYn(YnCode.Y)
-			.build();
-		boardRepository.save(deletedBoard);
+		Board existingBoard = isAdmin()
+			? findBoardByIdForAdmin(boardId)
+			: findBoardWithValidation(boardId,boardPassword);
+	    existingBoard.deleteBoard();
+		log.info("Board deleted {} " , existingBoard);
+		boardRepository.save(existingBoard);
 	}
+
+	// 관리자가 아닐 시 게시글 검증 로직
+	private Board findBoardWithValidation(Long boardId, @NotBlank String boardPassword) {
+		return boardRepository.findByBoardIdAndBoardPassword(boardId, boardPassword)
+			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+	}
+
+	// ID로 게시글 찾기 (관리자용)
+	private Board findBoardByIdForAdmin(Long boardId) {
+		return boardRepository.findByBoardIdAndDeletedYn(boardId,YnCode.N)
+			.orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+	}
+
+	// 관리자 권한 검증
+	private boolean isAdmin() {
+		return UserInfo.userRole().equals(Role.ADMIN.name());
+	}
+
+
 }

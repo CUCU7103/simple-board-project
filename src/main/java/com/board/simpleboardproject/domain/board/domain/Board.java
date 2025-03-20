@@ -3,13 +3,16 @@ package com.board.simpleboardproject.domain.board.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.board.simpleboardproject.domain.board.dto.update.BoardUpdateRequestDto;
 import com.board.simpleboardproject.domain.comment.domain.Comment;
 import com.board.simpleboardproject.global.model.YnCode;
+import com.board.simpleboardproject.global.security.application.UserInfo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.CascadeType;
@@ -90,5 +93,24 @@ public class Board {
 	@OneToMany
 	@JoinColumn(name="board_id", insertable = false, updatable = false)
 	private List<Comment> comments;
+
+	public void updateBoard(BoardUpdateRequestDto dto) {
+		this.title = dto.title();
+		this.post = dto.post();
+		this.username = dto.username();
+		this.modifiedBy = dto.username();
+	}
+
+	public void deleteBoard() {
+		this.deletedYn = YnCode.Y;
+		// 댓글 리스트가 null인 경우에도 안전하게 처리
+		if (this.comments != null) {
+			// 활성 상태인 댓글만 삭제 상태로 변경 (단일 스트림 작업으로)
+			this.comments.stream()
+				.filter(comment -> comment.getDeletedYn() != null && comment.getDeletedYn().equals(YnCode.N))
+				.forEach(comment -> comment.deleteComment(YnCode.Y));
+		}
+		this.modifiedBy = UserInfo.username();
+	}
 
 }

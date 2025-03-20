@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.board.simpleboardproject.global.model.YnCode;
+import com.board.simpleboardproject.global.security.application.UserInfo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
@@ -85,6 +86,7 @@ public class Comment {
 
 	public void deleteComment(YnCode deletedYn) {
 		this.deletedYn = deletedYn;
+		this.modifiedBy = UserInfo.username();
 	}
 
 }

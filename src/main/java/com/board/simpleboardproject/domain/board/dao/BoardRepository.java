@@ -20,6 +20,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	@Query("SELECT DISTINCT b FROM Board b LEFT JOIN FETCH b.comments WHERE b.boardId = :boardId AND b.deletedYn = :deletedYn")
 	Optional<Board> findByBoardIdAndDeletedYn(@Param("boardId")Long boardId, @Param("deletedYn")YnCode deletedYn);
 
-	Optional<Board> findByBoardIdAndBoardPassword(Long boardId,String boardPassword);
+	@Query("SELECT DISTINCT b FROM Board b LEFT JOIN FETCH b.comments WHERE b.boardId = :boardId "
+		+ "AND b.boardPassword = :boardPassword AND b.deletedYn = :deletedYn")
+	Optional<Board> findByBoardIdAndBoardPassword(@Param("boardId") Long boardId,  String boardPassword);
+
 
 }
