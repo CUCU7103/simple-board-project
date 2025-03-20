@@ -15,14 +15,19 @@ import com.board.simpleboardproject.domain.board.dto.search.BoardSearchByIdRespo
 import com.board.simpleboardproject.domain.board.dto.update.BoardUpdateRequestDto;
 import com.board.simpleboardproject.domain.board.dto.update.BoardUpdateResponseDto;
 import com.board.simpleboardproject.domain.board.mapper.BoardMapper;
+import com.board.simpleboardproject.domain.user.model.Role;
 import com.board.simpleboardproject.global.error.ErrorCode;
 import com.board.simpleboardproject.global.exception.CustomException;
 import com.board.simpleboardproject.global.model.YnCode;
+import com.board.simpleboardproject.global.security.application.UserInfo;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
 
 	private final BoardRepository boardRepository;
@@ -42,12 +47,9 @@ public class BoardService {
 
 	@Transactional(readOnly = true)
 	public BoardSearchByIdResponse getBoardById(Long boardId) {
-
-		Optional<Board> board = boardRepository.findById(boardId);
-		if (board.isEmpty()) {
-			throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
-		}
-		return boardMapper.toSearchByIdResponseDto(board.get());
+		Board board = boardRepository.findByBoardId(boardId)
+			.orElseThrow(()-> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+		return boardMapper.toSearchByIdResponseDto(board);
 
 	}
 

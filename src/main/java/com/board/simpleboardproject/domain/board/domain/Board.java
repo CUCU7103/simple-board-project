@@ -87,7 +87,7 @@ public class Board {
 		this.comments = comments == null ? new ArrayList<>() : comments;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+	@OneToMany
 	@JoinColumn(name="board_id", insertable = false, updatable = false)
 	private List<Comment> comments;
 
