@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
 public record BoardUpdateRequestDto(@NotBlank String title, @NotBlank String post, @NotBlank String username,
-									@NotBlank String boardPassword) {
+									String boardPassword) {
 	@Builder
 	public BoardUpdateRequestDto(String title, String post, String username, String boardPassword) {
 		this.title = title;

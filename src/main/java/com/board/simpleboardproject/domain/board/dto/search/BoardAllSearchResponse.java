@@ -9,16 +9,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Builder;
 
-public record BoardAllSearchResponse(String title, String username, String post,
+public record BoardAllSearchResponse(Long boardId ,String title, String username, String post,
 									 @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul") LocalDateTime createdAt,
 									 List<Comment> comments) {
 
 	@Builder
-	public BoardAllSearchResponse(String title, String username, String post, LocalDateTime createdAt , List<Comment> comments) {
+	public BoardAllSearchResponse(Long boardId, String title, String username, String post, LocalDateTime createdAt , List<Comment> comments) {
+		this.boardId = boardId;
 		this.title = title;
 		this.username = username;
 		this.post = post;
 		this.createdAt = createdAt;
-		this.comments = comments;
+		this.comments = comments.stream().sorted(Comparator.comparing(Comment::getCreatedAt).reversed()).toList();
 	}
 }

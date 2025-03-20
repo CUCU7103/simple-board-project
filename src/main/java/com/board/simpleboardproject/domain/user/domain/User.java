@@ -75,6 +75,7 @@ public class User implements UserDetails {
 		this.role = role;
 	}
 
+	// 사용자가 애플리케이션에서 가지고 있는 권한(permission)의 컬랙션을 반환합니다.
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));

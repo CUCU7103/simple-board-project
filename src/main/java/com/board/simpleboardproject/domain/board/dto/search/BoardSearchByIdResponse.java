@@ -9,14 +9,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Builder;
 
-public record BoardSearchByIdResponse(String title, String username, String post,
+public record BoardSearchByIdResponse(Long boardId,String title, String username, String post,
 									  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")  LocalDateTime createdAt,
 									  List<Comment> comments) {
 
 	@Builder
-	public BoardSearchByIdResponse(String title, String username, String post,
+	public BoardSearchByIdResponse(Long boardId, String title, String username, String post,
 		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul") LocalDateTime createdAt,
 		List<Comment> comments) {
+		this.boardId = boardId;
 		this.title = title;
 		this.username = username;
 		this.post = post;
