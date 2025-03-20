@@ -61,10 +61,12 @@ public class CommentService {
 
 	@Transactional
 	public void deleteComment(long commentId) {
-		Comment comment = commentRepository.findByCommentIdAndDeletedYn(commentId,YnCode.N)
-			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
-		comment.deleteComment(YnCode.Y);
-		commentRepository.save(comment);
+		Comment existingComment = findCommentWithValidation(commentId);
+		if(isAdmin() || isUserValid(existingComment)){
+			existingComment.deleteComment(YnCode.Y);
+		}else{
+			throw new CustomException(NO_MATCH_USER);
+		}
 	}
 
 	private Comment findCommentWithValidation(Long commentId) {
