@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.board.simpleboardproject.domain.board.dao.BoardRepository;
+import com.board.simpleboardproject.domain.board.domain.Board;
 import com.board.simpleboardproject.domain.comment.dao.CommentRepository;
 import com.board.simpleboardproject.domain.comment.domain.Comment;
 import com.board.simpleboardproject.domain.comment.dto.create.CommentCreateRequestDto;
@@ -15,11 +16,14 @@ import com.board.simpleboardproject.domain.comment.dto.create.CommentCreateRespo
 import com.board.simpleboardproject.domain.comment.dto.update.CommentUpdateRequestDto;
 import com.board.simpleboardproject.domain.comment.dto.update.CommentUpdateResponseDto;
 import com.board.simpleboardproject.domain.comment.mapper.CommentMapper;
+import com.board.simpleboardproject.domain.user.model.Role;
+import com.board.simpleboardproject.global.error.ErrorCode;
 import com.board.simpleboardproject.global.exception.CustomException;
 import com.board.simpleboardproject.global.model.YnCode;
 import com.board.simpleboardproject.global.security.application.UserInfo;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,21 +50,36 @@ public class CommentService {
 
 	@Transactional
 	public CommentUpdateResponseDto updateComment(long commentId, @Valid CommentUpdateRequestDto dto) {
-		Comment comment = commentRepository.findByCommentIdAndDeletedYn(commentId,YnCode.N)
-			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
-		if(!comment.getUsername().equals(UserInfo.username())){
+		Comment existingComment = findCommentWithValidation(commentId);
+		if(isAdmin() || isUserValid(existingComment)){
+			existingComment.updateComment(dto.post());
+			return commentMapper.toCommentUpdateResponseDto(existingComment);
+		}else{
 			throw new CustomException(NO_MATCH_USER);
 		}
-		comment.updateComment(dto.post(),UserInfo.username());
-		Comment result = commentRepository.save(comment);
-		return commentMapper.toCommentUpdateResponseDto(result);
 	}
 
 	@Transactional
 	public void deleteComment(long commentId) {
-		Comment comment = commentRepository.findByCommentIdAndDeletedYn(commentId,YnCode.N)
+		Comment existingComment = findCommentWithValidation(commentId);
+		if(isAdmin() || isUserValid(existingComment)){
+			existingComment.deleteComment(YnCode.Y);
+		}else{
+			throw new CustomException(NO_MATCH_USER);
+		}
+	}
+
+	private Comment findCommentWithValidation(Long commentId) {
+		return commentRepository.findByCommentIdAndDeletedYn(commentId,YnCode.N)
 			.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
-		comment.deleteComment(YnCode.Y);
-		commentRepository.save(comment);
+	}
+
+	// 관리자 권한 검증
+	private boolean isAdmin() {
+		return UserInfo.userRole().equals(Role.ADMIN.name());
+	}
+
+	private boolean isUserValid(Comment comment) {
+		return UserInfo.username().equals(comment.getUsername());
 	}
 }
