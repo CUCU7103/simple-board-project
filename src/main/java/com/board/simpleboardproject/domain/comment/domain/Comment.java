@@ -30,7 +30,6 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-@ToString
 public class Comment {
 
 	@Id
