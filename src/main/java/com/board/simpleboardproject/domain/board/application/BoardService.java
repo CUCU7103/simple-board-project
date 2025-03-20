@@ -36,7 +36,7 @@ public class BoardService {
 
 	@Transactional(readOnly = true)
 	public List<BoardAllSearchResponse> searchBoard() {
-		List<Board> board = boardRepository.findAllByOrderByCreatedAtDesc();
+		List<Board> board = boardRepository.findAllWithCommentsByDeletedYnOrderByCreatedAtDesc(YnCode.N);
 		return boardMapper.toAllSearchResponseDto(board);
 	}
 

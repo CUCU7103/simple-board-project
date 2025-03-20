@@ -18,6 +18,9 @@ spring:
   logging:
     config: classpath:log4j2-spring.xml
 
+  jackson:
+    time-zone: Asia/Seoul
+
 server:
   port: 8081
 
