@@ -79,9 +79,9 @@ public class Comment {
 		this.boardId = boardId;
 	}
 
-	public void updateComment(String post, String modifiedBy) {
+	public void updateComment(String post) {
 		this.post = post;
-		this.modifiedBy = modifiedBy;
+		this.modifiedBy = UserInfo.username();
 	}
 
 	public void deleteComment(YnCode deletedYn) {
